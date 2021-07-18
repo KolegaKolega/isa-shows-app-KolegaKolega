@@ -4,19 +4,22 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.util.Patterns
 import android.view.Window
 import android.widget.Button
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.widget.addTextChangedListener
 import com.example.shows_kolegakolega.databinding.ActivityLoginBinding
+import java.util.regex.Pattern
 
 class LoginActivity : AppCompatActivity() {
 
-    private lateinit var binding : ActivityLoginBinding
+    companion object {
+        private const val PASSWORD_MIN_LENGTH = 5
+    }
 
-    private var emailEditText : EditText? = null
-    private var passwordEditText : EditText? = null
-    private var loginButton : Button? = null
+    private lateinit var binding : ActivityLoginBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,20 +30,16 @@ class LoginActivity : AppCompatActivity() {
 
         setContentView(binding.root)
 
-        emailEditText = binding.email.editText
-        passwordEditText = binding.password.editText
-        loginButton = binding.loginbtn
-
         initCheckEmailPassword()
         initLoginButton()
 
     }
 
     private fun initLoginButton() {
-        loginButton?.setOnClickListener {
+        binding.loginbtn.setOnClickListener {
             binding.email.error = null
 
-            val email = emailEditText?.text.toString()
+            val email = binding.email.editText?.text.toString()
             Log.println(Log.DEBUG,"", email)
             if(validateEmail(email)) {
                 val intent = ShowsActivity.buildIntent(this)
@@ -53,28 +52,41 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun validateEmail(email: String): Boolean {
-        return email.contains("^\\S+@\\S+\$".toRegex())
+        return email.contains(Patterns.EMAIL_ADDRESS.toRegex())
     }
 
     private fun initCheckEmailPassword(){
-        emailEditText?.addTextChangedListener(textWatcher)
-        passwordEditText?.addTextChangedListener(textWatcher)
+        binding.email.editText?.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                val emailInput : String = binding.email.editText?.text.toString().trim()
+                val passwordInput : String = binding.password.editText?.text.toString().trim()
+
+                binding.loginbtn.isEnabled = emailInput.isNotEmpty() && passwordInput.length > PASSWORD_MIN_LENGTH
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+            }
+
+        })
+
+        binding.password.editText?.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                val emailInput : String = binding.email.editText?.text.toString().trim()
+                val passwordInput : String = binding.password.editText?.text.toString().trim()
+
+                binding.loginbtn.isEnabled = emailInput.isNotEmpty() && passwordInput.length > PASSWORD_MIN_LENGTH
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+            }
+
+        })
     }
 
-    private val textWatcher = object : TextWatcher {
-        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-        }
-
-        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            val eText : String = emailEditText?.text.toString().trim()
-            val pText : String = passwordEditText?.text.toString().trim()
-
-            loginButton?.isEnabled = eText.isNotEmpty() && pText.length > 5
-        }
-
-        override fun afterTextChanged(s: Editable?) {
-        }
-
-
-    }
 }

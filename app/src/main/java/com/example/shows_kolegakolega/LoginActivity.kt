@@ -43,7 +43,8 @@ class LoginActivity : AppCompatActivity() {
             val email = emailEditText?.text.toString()
             Log.println(Log.DEBUG,"", email)
             if(validateEmail(email)) {
-                val intent = WelcomeActivity.buildIntent(this, email)
+                val intent = ShowsActivity.buildIntent(this)
+                //val intent = WelcomeActivity.buildIntent(this, email)
                 startActivity(intent)
             }else {
                 binding.email.error = "Invalid email!"

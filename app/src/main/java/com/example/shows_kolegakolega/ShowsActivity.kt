@@ -17,7 +17,6 @@ class ShowsActivity : AppCompatActivity() {
 
     }
 
-
     private val shows = listOf(
         Show("1",
             "The Office",

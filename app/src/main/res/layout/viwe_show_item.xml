@@ -9,7 +9,7 @@
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="344dp"
+        android:layout_height="match_parent"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="8dp">
@@ -21,7 +21,7 @@
             
             <ImageView
                 android:id="@+id/showimage"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="192dp"
                 android:scaleType="centerCrop"
                 tools:src="@drawable/ic_office"
@@ -32,9 +32,10 @@
 
             <TextView
                 android:id="@+id/showtitle"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/showimage"
                 tools:text="The Office"
                 android:textSize="24sp"
@@ -45,9 +46,10 @@
 
             <TextView
                 android:id="@+id/showdescription"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
                 android:layout_gravity="bottom"
+                android:maxLines="2"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -56,8 +58,9 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="24dp"
                 android:layout_marginBottom="16dp"
-                tools:text="De gustibus non est disputandum"
-                android:textColor="@color/gray"/>
+                tools:text="De gustibus non est disputandum De gustibus non est disputandum De gustibus non est disputandum De gustibus non est disputandum De gustibus non est disputandum De gustibus non est disputandum"
+                android:textColor="@color/gray"
+                android:ellipsize="end"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

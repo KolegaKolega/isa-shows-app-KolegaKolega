@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    app:startDestination="@id/login">
+
+    <fragment
+        android:id="@+id/login"
+        android:name="com.example.shows_kolegakolega.LoginFragment"
+        tools:layout="@layout/activity_login">
+
+        <action
+            android:id="@+id/action_login_to_shows"
+            app:destination="@id/shows"/>
+
+
+    </fragment>
+
+
+    <fragment
+        android:id="@+id/shows"
+        tools:layout="@layout/activity_shows"
+        android:name="com.example.shows_kolegakolega.ShowsFragment">
+
+        <action
+            android:id="@+id/shows_to_empty_state"
+            app:destination="@id/empty_state"/>
+
+        <action
+            android:id="@+id/shows_to_details"
+            app:destination="@id/show_details"/>
+
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/empty_state"
+        tools:layout="@layout/activity_empty_state"
+        android:name="com.example.shows_kolegakolega.EmptyStateFragment">
+
+        <action
+            android:id="@+id/empty_state_to_shows"
+            app:destination="@id/shows"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/show_details"
+        tools:layout="@layout/activity_show_details"
+        android:name="com.example.shows_kolegakolega.ShowDetailsFragment">
+
+        <action
+            android:id="@+id/details_to_shows"
+            app:destination="@id/shows"/>
+
+    </fragment>
+
+
+</navigation>

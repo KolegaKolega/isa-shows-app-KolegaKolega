@@ -4,15 +4,19 @@ import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.core.view.isVisible
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.shows_kolegakolega.databinding.ActivityShowDetailsBinding
+import com.example.shows_kolegakolega.databinding.ActivityShowsBinding
 import com.example.shows_kolegakolega.databinding.DialogAddReviewBinding
 import com.example.shows_kolegakolega.model.Review
 import com.example.shows_kolegakolega.model.Show
 import com.google.android.material.bottomsheet.BottomSheetDialog
 
-class ShowDetailsActivity : AppCompatActivity() {
+class ShowDetailsFragment : Fragment() {
 
     companion object {
         private const val EXTRA_SHOW_NAME : String = "EXTRA_SHOW_NAME"
@@ -20,7 +24,7 @@ class ShowDetailsActivity : AppCompatActivity() {
         private const val EXTRA_SHOW_IMAGE : String = "EXTRA_SHOW_IMAGE"
 
         fun buildIntent(activity : Activity, show : Show) : Intent {
-            val intent = Intent(activity, ShowDetailsActivity::class.java)
+            val intent = Intent(activity, ShowDetailsFragment::class.java)
             intent.putExtra(EXTRA_SHOW_NAME, show.name)
             intent.putExtra(EXTRA_SHOW_DES, show.description)
             intent.putExtra(EXTRA_SHOW_IMAGE, show.image.toString())
@@ -33,21 +37,35 @@ class ShowDetailsActivity : AppCompatActivity() {
 
     private var reviewAdapter: ReviewAdapter? = null
 
-    private lateinit var binding: ActivityShowDetailsBinding
+    private var _binding: ActivityShowDetailsBinding? = null
+    // This property is only valid between onCreateView and
+    // onDestroyView.
+    private val binding get() = _binding!!
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    //val args: ActivityLoginBinding by navArgs()
 
-        supportActionBar?.hide()
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        _binding = ActivityShowDetailsBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
-        binding = ActivityShowDetailsBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         initLayout()
         intBackButton()
         initAddReviewButton()
         initRecyclerViwe()
     }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
 
     private fun initRecyclerViwe() {
         binding.reviewRecyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
@@ -64,7 +82,7 @@ class ShowDetailsActivity : AppCompatActivity() {
     }
 
     private fun addReviewBottomSheet() {
-        val dialog = BottomSheetDialog(this)
+        //val dialog = BottomSheetDialog(this)
 
         val bottomSheetBinding = DialogAddReviewBinding.inflate(layoutInflater)
         dialog.setContentView(bottomSheetBinding.root)

@@ -2,17 +2,20 @@ package com.example.shows_kolegakolega
 
 import android.app.Activity
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.shows_kolegakolega.databinding.ActivityShowsBinding
 import com.example.shows_kolegakolega.model.Show
 
-class ShowsActivity : AppCompatActivity() {
+class ShowsFragment : Fragment() {
 
     companion object {
         fun buildIntent(activity: Activity): Intent {
-            return Intent(activity, ShowsActivity::class.java)
+            return Intent(activity, ShowsFragment::class.java)
         }
 
     }
@@ -35,33 +38,44 @@ class ShowsActivity : AppCompatActivity() {
             R.drawable.ic_krv_nije_voda)
     )
 
-    private lateinit var binding : ActivityShowsBinding
+    private var _binding: ActivityShowsBinding? = null
+    // This property is only valid between onCreateView and
+    // onDestroyView.
+    private val binding get() = _binding!!
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    //val args: ActivityLoginBinding by navArgs()
 
-        supportActionBar?.hide()
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        _binding = ActivityShowsBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
-        binding = ActivityShowsBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         initButtonForEmptyState()
-        initRecyclerViwe()
+        initRecyclerView()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     private fun initButtonForEmptyState() {
         binding.showEmpty.setOnClickListener {
-            val intent = EmptyStateActivity.buildIntent(this)
-            startActivity(intent)
+
         }
     }
 
-    private fun initRecyclerViwe() {
-        binding.showsRecycler.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+    private fun initRecyclerView() {
+       // binding.showsRecycler.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
         binding.showsRecycler.adapter = ShowsAdapter(shows){
-            val intent = ShowDetailsActivity.buildIntent(this, it)
-            startActivity(intent)
+
         }
 
     }

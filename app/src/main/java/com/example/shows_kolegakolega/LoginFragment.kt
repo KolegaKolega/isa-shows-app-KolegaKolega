@@ -5,35 +5,51 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.util.Patterns
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.view.Window
 import android.widget.Button
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
+import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.navArgs
 import com.example.shows_kolegakolega.databinding.ActivityLoginBinding
-import java.util.regex.Pattern
 
-class LoginActivity : AppCompatActivity() {
+class LoginFragment : Fragment() {
 
     companion object {
         private const val PASSWORD_MIN_LENGTH = 5
     }
 
-    private lateinit var binding : ActivityLoginBinding
+    private var _binding: ActivityLoginBinding? = null
+    // This property is only valid between onCreateView and
+    // onDestroyView.
+    private val binding get() = _binding!!
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    //val args: ActivityLoginBinding by navArgs()
 
-        supportActionBar?.hide()
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        _binding = ActivityLoginBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
-        binding = ActivityLoginBinding.inflate(layoutInflater)
-
-        setContentView(binding.root)
-
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         initCheckEmailPassword()
         initLoginButton()
-
     }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
 
     private fun initLoginButton() {
         binding.loginbtn.setOnClickListener {
@@ -42,9 +58,7 @@ class LoginActivity : AppCompatActivity() {
             val email = binding.email.editText?.text.toString()
             Log.println(Log.DEBUG,"", email)
             if(validateEmail(email)) {
-                val intent = ShowsActivity.buildIntent(this)
-                //val intent = WelcomeActivity.buildIntent(this, email)
-                startActivity(intent)
+
             }else {
                 binding.email.error = "Invalid email!"
             }

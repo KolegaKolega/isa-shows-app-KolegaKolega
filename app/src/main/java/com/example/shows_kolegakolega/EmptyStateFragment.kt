@@ -8,24 +8,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.example.shows_kolegakolega.databinding.ActivityEmptyStateBinding
 import com.example.shows_kolegakolega.databinding.ActivityShowsBinding
 
 class EmptyStateFragment : Fragment() {
 
-    companion object {
-        fun buildIntent(activity: Activity): Intent {
-            return Intent(activity, EmptyStateFragment::class.java)
-        }
-
-    }
-
     private var _binding: ActivityEmptyStateBinding? = null
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
-
-    //val args: ActivityEmptyStateBinding by navArgs()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -39,7 +31,7 @@ class EmptyStateFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.hideEmpty.setOnClickListener {
-
+            findNavController().navigate(R.id.empty_state_to_shows)
         }
     }
 

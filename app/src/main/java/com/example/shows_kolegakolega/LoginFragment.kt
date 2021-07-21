@@ -14,6 +14,7 @@ import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.shows_kolegakolega.databinding.ActivityLoginBinding
 
@@ -58,7 +59,7 @@ class LoginFragment : Fragment() {
             val email = binding.email.editText?.text.toString()
             Log.println(Log.DEBUG,"", email)
             if(validateEmail(email)) {
-
+                findNavController().navigate(R.id.action_login_to_shows)
             }else {
                 binding.email.error = "Invalid email!"
             }

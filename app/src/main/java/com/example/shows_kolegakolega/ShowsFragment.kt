@@ -7,18 +7,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.shows_kolegakolega.databinding.ActivityShowsBinding
 import com.example.shows_kolegakolega.model.Show
 
 class ShowsFragment : Fragment() {
-
-    companion object {
-        fun buildIntent(activity: Activity): Intent {
-            return Intent(activity, ShowsFragment::class.java)
-        }
-
-    }
 
     private val shows = listOf(
         Show("1",
@@ -43,8 +37,6 @@ class ShowsFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
 
-    //val args: ActivityLoginBinding by navArgs()
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -67,15 +59,19 @@ class ShowsFragment : Fragment() {
 
     private fun initButtonForEmptyState() {
         binding.showEmpty.setOnClickListener {
-
+            findNavController().navigate(R.id.shows_to_empty_state)
         }
     }
 
     private fun initRecyclerView() {
-       // binding.showsRecycler.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+       binding.showsRecycler.layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
 
         binding.showsRecycler.adapter = ShowsAdapter(shows){
-
+            val showName = it.name
+            val showDescription =  it.description
+            val showImage = it.image
+            val action = ShowsFragmentDirections.showsToDetails(showName, showDescription, showImage)
+            findNavController().navigate(action)
         }
 
     }

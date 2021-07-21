@@ -2,36 +2,22 @@ package com.example.shows_kolegakolega
 
 import android.app.Activity
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.shows_kolegakolega.databinding.ActivityShowDetailsBinding
-import com.example.shows_kolegakolega.databinding.ActivityShowsBinding
 import com.example.shows_kolegakolega.databinding.DialogAddReviewBinding
 import com.example.shows_kolegakolega.model.Review
 import com.example.shows_kolegakolega.model.Show
 import com.google.android.material.bottomsheet.BottomSheetDialog
 
 class ShowDetailsFragment : Fragment() {
-
-    companion object {
-        private const val EXTRA_SHOW_NAME : String = "EXTRA_SHOW_NAME"
-        private const val EXTRA_SHOW_DES : String = "EXTRA_SHOW_DES"
-        private const val EXTRA_SHOW_IMAGE : String = "EXTRA_SHOW_IMAGE"
-
-        fun buildIntent(activity : Activity, show : Show) : Intent {
-            val intent = Intent(activity, ShowDetailsFragment::class.java)
-            intent.putExtra(EXTRA_SHOW_NAME, show.name)
-            intent.putExtra(EXTRA_SHOW_DES, show.description)
-            intent.putExtra(EXTRA_SHOW_IMAGE, show.image.toString())
-            return intent
-        }
-
-    }
 
     private var reviews = emptyList<Review>()
 
@@ -42,7 +28,7 @@ class ShowDetailsFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
 
-    //val args: ActivityLoginBinding by navArgs()
+    val args: ShowDetailsFragmentArgs by navArgs()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -55,10 +41,16 @@ class ShowDetailsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initLayout()
+        initLayout(args.showName, args.showDescription, args.showImage)
         intBackButton()
         initAddReviewButton()
-        initRecyclerViwe()
+        initRecyclerView()
+    }
+
+    private fun initLayout(showName: String, showDescription: String, showImage: Int) {
+        binding.showTitle.text = showName
+        binding.showDescription.text = showDescription
+        binding.showImage.setImageResource(showImage)
     }
 
     override fun onDestroyView() {
@@ -67,8 +59,8 @@ class ShowDetailsFragment : Fragment() {
     }
 
 
-    private fun initRecyclerViwe() {
-        binding.reviewRecyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+    private fun initRecyclerView() {
+        binding.reviewRecyclerView.layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
 
         reviewAdapter = ReviewAdapter(reviews)
         binding.reviewRecyclerView.adapter = reviewAdapter
@@ -82,10 +74,10 @@ class ShowDetailsFragment : Fragment() {
     }
 
     private fun addReviewBottomSheet() {
-        //val dialog = BottomSheetDialog(this)
+        val dialog = this.context?.let { BottomSheetDialog(it) }
 
         val bottomSheetBinding = DialogAddReviewBinding.inflate(layoutInflater)
-        dialog.setContentView(bottomSheetBinding.root)
+        dialog?.setContentView(bottomSheetBinding.root)
 
         bottomSheetBinding.submit.setOnClickListener {
             val review = Review("imenko.prezimenkovic", bottomSheetBinding.comment.editText?.text.toString(),
@@ -102,28 +94,20 @@ class ShowDetailsFragment : Fragment() {
 
             binding.noReviweYet.isVisible = false
             binding.reviewRecyclerView.isVisible = true
-            dialog.dismiss()
+            dialog?.dismiss()
         }
 
         bottomSheetBinding.exit.setOnClickListener{
-            dialog.dismiss()
+            dialog?.dismiss()
         }
 
-        dialog.show()
+        dialog?.show()
     }
 
     private fun intBackButton() {
         binding.toolbarBack.setOnClickListener {
-            onBackPressed()
+            findNavController().navigate(R.id.details_to_shows)
         }
     }
 
-    private fun initLayout() {
-        binding.showTitle.text = intent.extras?.getString(EXTRA_SHOW_NAME)
-        binding.showDescription.text = intent.extras?.getString(EXTRA_SHOW_DES)
-        val img = intent.extras?.getString(EXTRA_SHOW_IMAGE)
-        if (img != null) {
-            binding.showImage.setImageResource( img.toInt() )
-        }
-    }
 }

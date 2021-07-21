@@ -50,6 +50,13 @@ class ShowsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initButtonForEmptyState()
         initRecyclerView()
+        initLogOutButton()
+    }
+
+    private fun initLogOutButton() {
+        binding.logOutBtn.setOnClickListener {
+            findNavController().navigate(R.id.shows_to_login)
+        }
     }
 
     override fun onDestroyView() {

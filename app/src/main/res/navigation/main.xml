@@ -13,9 +13,9 @@
 
         <action
             android:id="@+id/action_login_to_shows"
-            app:destination="@id/shows"/>
+            app:destination="@id/shows"
+            app:popUpTo="@id/login"/>
     </fragment>
-
 
     <fragment
         android:id="@+id/shows"
@@ -24,11 +24,18 @@
 
         <action
             android:id="@+id/shows_to_empty_state"
-            app:destination="@id/empty_state"/>
+            app:destination="@id/empty_state"
+            app:popUpTo="@id/empty_state"/>
+
+        <action
+            android:id="@+id/shows_to_login"
+            app:destination="@id/login"
+            app:popUpTo="@id/login"/>
 
         <action
             android:id="@+id/shows_to_details"
-            app:destination="@id/show_details">
+            app:destination="@id/show_details"
+            app:popUpTo="@id/show_details">
 
             <argument
                 android:name="show_name"
@@ -54,7 +61,8 @@
 
         <action
             android:id="@+id/empty_state_to_shows"
-            app:destination="@id/shows"/>
+            app:destination="@id/shows"
+            app:popUpTo="@id/shows"/>
     </fragment>
 
     <fragment
@@ -76,9 +84,9 @@
 
         <action
             android:id="@+id/details_to_shows"
-            app:destination="@id/shows"/>
+            app:destination="@id/shows"
+            app:popUpTo="@id/shows"/>
 
     </fragment>
-
 
 </navigation>

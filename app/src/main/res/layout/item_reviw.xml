@@ -1,99 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:padding="8dp"
-    android:clipToPadding="false">
+    android:clipToPadding="false"
+    android:padding="8dp">
 
-<!--    <androidx.cardview.widget.CardView-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent"-->
-<!--        android:layout_marginStart="24dp"-->
-<!--        android:layout_marginEnd="24dp"-->
-<!--        android:layout_marginBottom="16dp">-->
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginBottom="16dp">
+    <ImageView
+        android:id="@+id/placeholder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_profile_placeholder"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"/>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginEnd="24dp"
-            android:layout_marginBottom="16dp">
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginStart="16dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/purple_700"
+        android:layout_marginTop="32dp"
+        app:layout_constraintStart_toEndOf="@id/placeholder"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="imenko.prezimenkovic" />
 
-                <ImageView
-                    android:id="@+id/placeholder"
-                    android:layout_width="52dp"
-                    android:layout_height="50dp"
-                    android:src="@drawable/ic_profile_placeholder"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
+    <ImageView
+        android:id="@+id/rating_star"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_star"
+        android:layout_marginTop="32dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-                <TextView
-                    android:id="@+id/name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:maxLines="1"
-                    android:ellipsize="end"
-                    tools:text="imenko.prezimenkovic"
-                    android:textColor="@color/purple_700"
-                    android:layout_gravity="center"
-                    android:layout_marginStart="16dp"
-                    app:layout_constraintStart_toEndOf="@id/placeholder"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
+    <TextView
+        android:id="@+id/rating"
+        android:layout_width="wrap_content"
+        android:layout_height="16dp"
+        android:textColor="@color/purple_700"
+        android:layout_marginTop="32dp"
+        app:layout_constraintEnd_toStartOf="@id/rating_star"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginEnd="4dp"
+        tools:text="5" />
 
-                <ImageView
-                    android:id="@+id/rating_star"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_star"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"/>
-
-                <TextView
-                    android:id="@+id/rating"
-                    android:layout_width="wrap_content"
-                    android:layout_height="16dp"
-                    tools:text="5"
-                    android:layout_margin="4dp"
-                    android:textColor="@color/purple_700"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@id/rating_star"/>
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <TextView
-                android:id="@+id/reviwe_comment"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                tools:text="It was good. I laughed a lot, it matches my sense of humor perfectly. Loved it!"
-                android:textColor="@color/black"
-                android:maxLines="2"
-                android:ellipsize="end"
-                android:layout_marginStart="24dp"
-                android:layout_marginEnd="24dp"
-                android:textSize="16sp"
-                android:layout_gravity="bottom"/>
-
-        </LinearLayout>
-
-    <LinearLayout
+    <TextView
+        android:id="@+id/reviwe_comment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_gravity="bottom"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/placeholder"
+
+        tools:text="It was good. I laughed a lot, it matches my sense of humor perfectly. Loved it!" />
+
+
+    <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/gray"
+        android:layout_gravity="bottom"
         android:layout_marginStart="24dp"
-        android:layout_marginEnd="24dp">
-    </LinearLayout>
+        android:layout_marginEnd="24dp"
+        android:layout_marginTop="16dp"
+        android:background="@color/gray"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/reviwe_comment"/>
 
-</FrameLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

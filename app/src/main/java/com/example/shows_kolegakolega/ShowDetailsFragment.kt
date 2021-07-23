@@ -1,7 +1,6 @@
 package com.example.shows_kolegakolega
 
-import android.app.Activity
-import android.content.Intent
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,10 +13,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.shows_kolegakolega.databinding.ActivityShowDetailsBinding
 import com.example.shows_kolegakolega.databinding.DialogAddReviewBinding
 import com.example.shows_kolegakolega.model.Review
-import com.example.shows_kolegakolega.model.Show
 import com.google.android.material.bottomsheet.BottomSheetDialog
 
 class ShowDetailsFragment : Fragment() {
+
+    companion object {
+        private const val EMAIL = "EMAIL"
+    }
 
     private var reviews = emptyList<Review>()
 
@@ -80,9 +82,15 @@ class ShowDetailsFragment : Fragment() {
         dialog?.setContentView(bottomSheetBinding.root)
 
         bottomSheetBinding.submit.setOnClickListener {
-            val review = Review("imenko.prezimenkovic", bottomSheetBinding.comment.editText?.text.toString(),
-                bottomSheetBinding.ratingBar.rating.toInt())
-            reviewAdapter?.addItem(review)
+            val username = getUserName()
+            val review = username?.let { it1 ->
+                Review(
+                    it1, bottomSheetBinding.comment.editText?.text.toString(),
+                    bottomSheetBinding.ratingBar.rating.toInt())
+            }
+            if (review != null) {
+                reviewAdapter?.addItem(review)
+            }
 
             binding.average.isVisible = true
             binding.ratingBar.isVisible = true
@@ -102,6 +110,12 @@ class ShowDetailsFragment : Fragment() {
         }
 
         dialog?.show()
+    }
+
+    private fun getUserName(): String? {
+        val prefs = activity?.getPreferences(Context.MODE_PRIVATE)
+        val userName = prefs?.getString(EMAIL, "No name")
+        return userName?.let { userName.substring(0, it.indexOf("@")) }
     }
 
     private fun intBackButton() {

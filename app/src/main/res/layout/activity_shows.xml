@@ -31,7 +31,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:text="Show empty state"
+        android:text="@string/show_hide_empty_state"
         android:layout_margin="16dp"
         android:background="@color/gray"/>
 
@@ -40,7 +40,28 @@
         android:id="@+id/shows_recycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:listitem="@layout/viwe_show_item"/>
+        tools:listitem="@layout/viwe_show_item"
+        />
+
+    <ImageView
+        android:id="@+id/camera"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_shows_empty_state"
+        android:layout_gravity="center"
+        android:layout_marginTop="150dp"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/text_camera"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/your_shows_are_not_showing_get_it"
+        app:layout_constraintTop_toBottomOf="@id/camera"
+        android:gravity="center"
+        android:layout_marginTop="26dp"
+        android:textSize="20sp"
+        android:visibility="gone"/>
 
 
 

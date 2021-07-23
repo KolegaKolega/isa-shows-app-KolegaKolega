@@ -103,9 +103,10 @@ class ShowDetailsActivity : AppCompatActivity() {
     private fun initLayout() {
         binding.showTitle.text = intent.extras?.getString(EXTRA_SHOW_NAME)
         binding.showDescription.text = intent.extras?.getString(EXTRA_SHOW_DES)
-        val img = intent.extras?.getString(EXTRA_SHOW_IMAGE)
-        if (img != null) {
-            binding.showImage.setImageResource( img.toInt() )
+        val imageResourceId = intent.extras?.getInt(EXTRA_SHOW_IMAGE)
+        if (imageResourceId != null) {
+            binding.showImage.setImageResource(imageResourceId)
         }
+
     }
 }

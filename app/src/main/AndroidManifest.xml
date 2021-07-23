@@ -9,7 +9,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Showskolegakolega">
-        <activity android:name=".ShowDetailsActivity"></activity>
+        <activity android:name=".ShowDetailsActivity"/>
         <activity android:name=".EmptyStateActivity" />
         <activity android:name=".ShowsActivity" />
         <activity android:name=".MainActivity" />

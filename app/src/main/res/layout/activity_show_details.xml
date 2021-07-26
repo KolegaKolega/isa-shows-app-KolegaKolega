@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ShowDetailsFragment">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true"
+        android:background="@color/white">
+
+        <com.google.android.material.appbar.CollapsingToolbarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            app:titleEnabled="false">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar_back"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:navigationIcon="@drawable/ic_back_button"
+                android:background="@color/white"
+                android:fitsSystemWindows="true"
+                app:layout_scrollFlags="scroll|enterAlways"/>
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/show_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:text="The Office"
+                android:textSize="32sp"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:layout_marginTop="32dp"
+                android:layout_marginStart="24dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                />
+
+            <ImageView
+                android:id="@+id/show_image"
+                android:layout_width="match_parent"
+                android:layout_height="350dp"
+                tools:src="@drawable/ic_office_opened"
+                android:layout_marginTop="32dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginEnd="24dp"
+                app:layout_constraintTop_toBottomOf="@id/show_title" />
+
+            <TextView
+                android:id="@+id/show_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:text="The Office is an American mockumentary sitcom television series that depicts the everyday work lives of office employees in the Scranton, Pennsylvania, branch of the fictional Dunder Mifflin Paper Company."
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/show_image"
+                android:layout_margin="24dp"/>
+
+            <TextView
+                android:id="@+id/review"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Reviewes"
+                android:textColor="@color/black"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/show_description"
+                android:layout_marginTop="32dp"
+                android:layout_marginStart="24dp"/>
+
+            <TextView
+                android:id="@+id/average"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="3 REVIEWS, 4.33 AVERAGE"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/review"
+                android:layout_marginTop="16dp"
+                android:layout_marginStart="24dp"
+                android:visibility="gone"
+                android:textAllCaps="true"/>
+
+            <androidx.appcompat.widget.AppCompatRatingBar
+                android:id="@+id/rating_bar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:numStars="5"
+                tools:rating="1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/review"
+                android:layout_marginTop="40dp"
+                android:layout_marginStart="24dp"
+                android:progressTint="@color/purple_700"
+                android:secondaryProgressTint="@color/purple_700"
+                style="@style/Widget.AppCompat.RatingBar.Small"
+                android:visibility="gone"
+                />
+            
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/review_recycler_view"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/rating_bar"
+                app:layout_constraintBottom_toTopOf="@id/add_reviwe_button"
+                tools:listitem="@layout/item_reviw"
+                android:layout_marginTop="40dp"
+                android:visibility="gone"
+                />
+
+            <TextView
+                android:id="@+id/no_reviwe_yet"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
+                android:layout_marginBottom="40dp"
+                android:text="No reviews yet"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/review"
+                app:layout_constraintBottom_toTopOf="@id/add_reviwe_button"
+                />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/add_reviwe_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Write a reviwe"
+                android:layout_margin="24dp"
+                android:background="@drawable/rounded_reviwe_button"
+                android:textColor="@color/white"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:textAllCaps="false"
+                />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
+

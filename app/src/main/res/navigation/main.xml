@@ -15,6 +15,23 @@
             android:id="@+id/action_login_to_shows"
             app:destination="@id/shows"
             app:popUpTo="@id/login"/>
+
+        <action
+            android:id="@+id/action_login_to_register"
+            app:destination="@id/register"
+            app:popUpTo="@id/register"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/register"
+        android:name="com.example.shows_kolegakolega.RegisterFragment"
+        tools:layout="@layout/registration_fragment_layout">
+
+        <action
+            android:id="@+id/register_to_login"
+            app:destination="@id/login"
+            app:popUpTo="@id/login"/>
+
     </fragment>
 
     <fragment

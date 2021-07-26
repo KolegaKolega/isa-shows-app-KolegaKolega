@@ -9,6 +9,7 @@ import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.shows_kolegakolega.databinding.ActivityLoginBinding
@@ -19,6 +20,7 @@ class LoginFragment : Fragment() {
         private const val PASSWORD_MIN_LENGTH = 5
         private const val EMAIL = "EMAIL"
         private const val REMEMBER_ME = "Remember_me"
+        private const val SUCCESFUL_REGISTRATION = "succ_reg"
     }
 
     private var _binding: ActivityLoginBinding? = null
@@ -34,15 +36,33 @@ class LoginFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = ActivityLoginBinding.inflate(inflater, container, false)
+        checkIfSuccesfulRegistartion()
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        checkIfSuccesfulRegistartion()
         initAutoLogin()
         initCheckEmailPassword()
         initLoginButton()
+        initRegisterButton()
 
+    }
+
+    private fun checkIfSuccesfulRegistartion() {
+        val prefs = activity?.getPreferences(Context.MODE_PRIVATE)
+        val succRegistration = prefs?.getBoolean(SUCCESFUL_REGISTRATION, false)
+        if(succRegistration == true){
+            binding.login.text = "Registration successful!"
+            binding.registration.isVisible = false
+        }
+    }
+
+    private fun initRegisterButton() {
+        binding.registration.setOnClickListener {
+            findNavController().navigate(R.id.action_login_to_register)
+        }
     }
 
     private fun initAutoLogin() {

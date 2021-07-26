@@ -23,11 +23,6 @@
         android:name="com.example.shows_kolegakolega.ShowsFragment">
 
         <action
-            android:id="@+id/shows_to_empty_state"
-            app:destination="@id/empty_state"
-            app:popUpTo="@id/empty_state"/>
-
-        <action
             android:id="@+id/shows_to_login"
             app:destination="@id/login"
             app:popUpTo="@id/login"/>
@@ -35,35 +30,11 @@
         <action
             android:id="@+id/shows_to_details"
             app:destination="@id/show_details"
-            app:popUpTo="@id/show_details">
-
-            <argument
-                android:name="show_name"
-                app:argType="string"/>
-
-            <argument
-                android:name="show_description"
-                app:argType="string"/>
-
-            <argument
-                android:name="show_image"
-                app:argType="integer"/>
-
-        </action>
+            app:popUpTo="@id/show_details"/>
 
 
     </fragment>
 
-    <fragment
-        android:id="@+id/empty_state"
-        tools:layout="@layout/activity_empty_state"
-        android:name="com.example.shows_kolegakolega.EmptyStateFragment">
-
-        <action
-            android:id="@+id/empty_state_to_shows"
-            app:destination="@id/shows"
-            app:popUpTo="@id/shows"/>
-    </fragment>
 
     <fragment
         android:id="@+id/show_details"
@@ -71,21 +42,15 @@
         android:name="com.example.shows_kolegakolega.ShowDetailsFragment">
 
         <argument
-            android:name="show_name"
+            android:name="show_id"
             app:argType="string"/>
-
-        <argument
-            android:name="show_description"
-            app:argType="string"/>
-
-        <argument
-            android:name="show_image"
-            app:argType="integer"/>
 
         <action
             android:id="@+id/details_to_shows"
             app:destination="@id/shows"
-            app:popUpTo="@id/shows"/>
+            app:popUpTo="@id/shows">
+
+        </action>
 
     </fragment>
 

@@ -1,6 +1,7 @@
 package com.example.shows_kolegakolega.data
 
 import com.example.shows_kolegakolega.R
+import com.example.shows_kolegakolega.model.Review
 import com.example.shows_kolegakolega.model.Show
 
 object DemoData {
@@ -23,5 +24,14 @@ object DemoData {
             R.drawable.ic_krv_nije_voda, mutableListOf())
     )
 
+    fun getShowById(id: String): Show {
+        for(s in shows){
+            if(s.id == id) return s
+        }
+        return shows[0]
+    }
 
+    fun addReview(review: Review, showId: String){
+        getShowById(showId).addReview(review)
+    }
 }

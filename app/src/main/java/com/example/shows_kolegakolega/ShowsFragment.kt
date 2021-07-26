@@ -69,10 +69,7 @@ class ShowsFragment : Fragment() {
        binding.showsRecycler.layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
 
         binding.showsRecycler.adapter = ShowsAdapter(shows){
-            val showName = it.name
-            val showDescription =  it.description
-            val showImage = it.image
-            val action = ShowsFragmentDirections.showsToDetails(showName, showDescription, showImage)
+            val action = ShowsFragmentDirections.showsToDetails(it.id)
             findNavController().navigate(action)
         }
 

@@ -7,9 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.shows_kolegakolega.data.DemoData
 import com.example.shows_kolegakolega.databinding.ActivityShowDetailsBinding
 import com.example.shows_kolegakolega.databinding.DialogAddReviewBinding
 import com.example.shows_kolegakolega.model.Review
@@ -21,8 +23,6 @@ class ShowDetailsFragment : Fragment() {
         private const val EMAIL = "EMAIL"
     }
 
-    private var reviews = emptyList<Review>()
-
     private var reviewAdapter: ReviewAdapter? = null
 
     private var _binding: ActivityShowDetailsBinding? = null
@@ -31,6 +31,8 @@ class ShowDetailsFragment : Fragment() {
     private val binding get() = _binding!!
 
     val args: ShowDetailsFragmentArgs by navArgs()
+
+    private val viewModel: ShowDetailsViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -43,16 +45,32 @@ class ShowDetailsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initLayout(args.showName, args.showDescription, args.showImage)
+        initLayout(args.showId)
         intBackButton()
         initAddReviewButton()
-        initRecyclerView()
+        viewModel.initReviews(args.showId)
+        checkReviews()
+        viewModel.getReviewsLiveData().observe(viewLifecycleOwner, { reviews ->
+            initRecyclerView(reviews)
+        })
+
     }
 
-    private fun initLayout(showName: String, showDescription: String, showImage: Int) {
-        binding.showTitle.text = showName
-        binding.showDescription.text = showDescription
-        binding.showImage.setImageResource(showImage)
+    private fun checkReviews() {
+        if(viewModel.countReviews() > 0){
+            binding.noReviweYet.isVisible = false
+            binding.reviewRecyclerView.isVisible = true
+            binding.average.isVisible = true
+            binding.ratingBar.isVisible = true
+            binding.average.text = "${viewModel.countReviews()} Reviews, ${viewModel.getAverage()} Average"
+            binding.ratingBar.rating = viewModel.getAverage()
+        }
+    }
+
+    private fun initLayout(showId: String) {
+        binding.showTitle.text = DemoData.getShowById(showId).name
+        binding.showDescription.text = DemoData.getShowById(showId).description
+        binding.showImage.setImageResource(DemoData.getShowById(showId).image)
     }
 
     override fun onDestroyView() {
@@ -61,7 +79,7 @@ class ShowDetailsFragment : Fragment() {
     }
 
 
-    private fun initRecyclerView() {
+    private fun initRecyclerView(reviews: List<Review>) {
         binding.reviewRecyclerView.layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
 
         reviewAdapter = ReviewAdapter(reviews)
@@ -89,19 +107,10 @@ class ShowDetailsFragment : Fragment() {
                     bottomSheetBinding.ratingBar.rating.toInt())
             }
             if (review != null) {
-                reviewAdapter?.addItem(review)
+                viewModel.addReview(review)
             }
 
-            binding.average.isVisible = true
-            binding.ratingBar.isVisible = true
-
-            binding.average.text = "${reviewAdapter?.itemCount} Reviews, ${reviewAdapter?.getAverage()} Average"
-            if (reviewAdapter != null) {
-                binding.ratingBar.rating = reviewAdapter!!.getAverage()
-            }
-
-            binding.noReviweYet.isVisible = false
-            binding.reviewRecyclerView.isVisible = true
+            checkReviews()
             dialog?.dismiss()
         }
 

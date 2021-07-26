@@ -28,15 +28,6 @@ class ReviewAdapter(
         notifyItemInserted(items.lastIndex)
     }
 
-    fun getAverage(): Float{
-        var count: Int = 0
-        items.forEach{
-            count+=it.rating
-        }
-
-        return count / items.size.toFloat()
-    }
-
     inner class ReviewViewHolder(private val binding : ItemReviwBinding) : RecyclerView.ViewHolder(binding.root){
 
         fun bind(item : Review){

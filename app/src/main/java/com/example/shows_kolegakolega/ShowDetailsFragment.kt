@@ -30,7 +30,7 @@ class ShowDetailsFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
 
-    val args: ShowDetailsFragmentArgs by navArgs()
+    private val args: ShowDetailsFragmentArgs by navArgs()
 
     private val viewModel: ShowDetailsViewModel by viewModels()
 
@@ -129,7 +129,7 @@ class ShowDetailsFragment : Fragment() {
 
     private fun intBackButton() {
         binding.toolbarBack.setOnClickListener {
-            findNavController().navigate(R.id.details_to_shows)
+            findNavController().navigateUp()
         }
     }
 

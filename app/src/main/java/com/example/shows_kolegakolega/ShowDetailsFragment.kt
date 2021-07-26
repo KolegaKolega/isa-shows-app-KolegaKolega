@@ -106,7 +106,7 @@ class ShowDetailsFragment : Fragment() {
 
     private fun intBackButton() {
         binding.toolbarBack.setOnClickListener {
-            findNavController().navigate(R.id.details_to_shows)
+            findNavController().navigateUp()
         }
     }
 

@@ -29,7 +29,6 @@ class LoginFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
 
-    //val args: ActivityLoginBinding by navArgs()
 
     override fun onCreateView(
         inflater: LayoutInflater,

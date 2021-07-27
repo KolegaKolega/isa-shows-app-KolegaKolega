@@ -53,19 +53,30 @@ class ShowsFragment : Fragment() {
     }
 
     private fun updateBotomSheetPhoto() {
-        Glide.with(this)
-            .load(getPhotoUri(FileUtil.getImageFile(this.context)))
-            .diskCacheStrategy(DiskCacheStrategy.NONE)
-            .skipMemoryCache(true)
-            .into(bottomSheetBinding.profilePhoto)
+        if(FileUtil.getImageFile(this.context) != null){
+            Glide.with(this)
+                .load(getPhotoUri(FileUtil.getImageFile(this.context)))
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .skipMemoryCache(true)
+                .into(bottomSheetBinding.profilePhoto)
+
+        }else{
+            bottomSheetBinding.profilePhoto.setImageResource(R.drawable.ic_profile_placeholder)
+        }
+
     }
 
     private fun updateUserPhoto(){
-        Glide.with(this)
-            .load(getPhotoUri(FileUtil.getImageFile(this.context)))
-            .diskCacheStrategy(DiskCacheStrategy.NONE)
-            .skipMemoryCache(true)
-            .into(binding.logOutButton)
+        if(FileUtil.getImageFile(this.context) != null){
+            Glide.with(this)
+                .load(getPhotoUri(FileUtil.getImageFile(this.context)))
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .skipMemoryCache(true)
+                .into(binding.logOutButton)
+
+        }else{
+            binding.logOutButton.setImageResource(R.drawable.ic_profile_placeholder)
+        }
     }
 
     private fun openCamera() {
@@ -181,4 +192,5 @@ class ShowsFragment : Fragment() {
 
     }
 }
+
 

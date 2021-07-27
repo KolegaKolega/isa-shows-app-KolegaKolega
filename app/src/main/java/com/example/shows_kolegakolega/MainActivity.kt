@@ -1,11 +1,13 @@
 package com.example.shows_kolegakolega
 
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.example.shows_kolegakolega.databinding.ActivityMainBinding
+import com.example.shows_kolegakolega.networking.ApiModule
 
 
 class MainActivity : AppCompatActivity() {
@@ -16,8 +18,7 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.hide()
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        val viewModel: ShowsViewModel by viewModels()
-
+        ApiModule.initRetrofit(getPreferences(Context.MODE_PRIVATE))
 
     }
 }

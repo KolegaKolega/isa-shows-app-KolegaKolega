@@ -40,7 +40,6 @@ class RegisterFragment: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        activity?.getPreferences(Context.MODE_PRIVATE)?.let { initRetrofit(it) }
         viewModel.getRegistrationResultLiveData().observe(this.viewLifecycleOwner) {succes ->
             if(succes){
                 Toast.makeText(this.context, "USPJEŠNA REGISTRACIJA", Toast.LENGTH_SHORT).show()
@@ -52,7 +51,6 @@ class RegisterFragment: Fragment() {
             } else {
                 Toast.makeText(this.context, "NIJE USPJEŠNA REGISTRACIJA", Toast.LENGTH_SHORT).show()
             }
-
         }
 
         binding.apply {

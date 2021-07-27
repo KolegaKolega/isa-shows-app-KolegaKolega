@@ -9,8 +9,10 @@ import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.shows_kolegakolega.databinding.ActivityLoginBinding
 
@@ -28,7 +30,7 @@ class LoginFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
 
-    //val args: ActivityLoginBinding by navArgs()
+    private val viewModel: SignInViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -42,6 +44,14 @@ class LoginFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel.getSignInResultLiveData().observe(viewLifecycleOwner){ succes ->
+            if(succes){
+                findNavController().navigate(R.id.action_login_to_shows)
+            }else{
+                Toast.makeText(this.context, "Prijava nije uspjela", Toast.LENGTH_SHORT).show()
+            }
+
+        }
         checkIfSuccesfulRegistartion()
         initAutoLogin()
         initCheckEmailPassword()
@@ -85,10 +95,15 @@ class LoginFragment : Fragment() {
             binding.email.error = null
 
             val email = binding.email.editText?.text.toString()
-            Log.println(Log.DEBUG,"", email)
+
             if(validateEmail(email)) {
                 isRememberMeChecked()
-                findNavController().navigate(R.id.action_login_to_shows)
+                activity?.getPreferences(Context.MODE_PRIVATE)?.let { it1 ->
+                    viewModel.signIn(binding.email.editText?.text.toString(),
+                        binding.password.editText?.text.toString(),
+                        it1
+                    )
+                }
             }else {
                 binding.email.error = "Invalid email!"
             }
@@ -100,7 +115,6 @@ class LoginFragment : Fragment() {
             if(binding.chechboxRememberMe.isChecked){
                 this?.putBoolean(REMEMBER_ME, true)
             }
-            this?.putString(EMAIL, binding.email.editText?.text.toString())
             this?.apply()
         }
 

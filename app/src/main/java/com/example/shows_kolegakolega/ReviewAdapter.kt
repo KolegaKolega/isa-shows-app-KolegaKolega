@@ -2,6 +2,7 @@ package com.example.shows_kolegakolega
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.example.shows_kolegakolega.databinding.ItemReviwBinding
 import com.example.shows_kolegakolega.model.Review
@@ -23,6 +24,7 @@ class ReviewAdapter(
         return items.size
     }
 
+
     fun addItem(review: Review){
         items = items + review
         notifyItemInserted(items.lastIndex)
@@ -31,11 +33,15 @@ class ReviewAdapter(
     inner class ReviewViewHolder(private val binding : ItemReviwBinding) : RecyclerView.ViewHolder(binding.root){
 
         fun bind(item : Review){
-            binding.name.text = item.name
+            binding.name.text = item.user.email
             binding.rating.text = item.rating.toString()
 
-            if(!item.comment.isNullOrEmpty())
+            if(!item.comment.isNullOrEmpty()){
                 binding.reviweComment.text = item.comment
+            }else{
+                binding.reviweComment.isVisible = false
+            }
+
         }
 
     }

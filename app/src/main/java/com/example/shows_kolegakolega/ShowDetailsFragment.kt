@@ -109,5 +109,4 @@ class ShowDetailsFragment : Fragment() {
             findNavController().navigateUp()
         }
     }
-
 }

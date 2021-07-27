@@ -19,6 +19,7 @@ object ApiModule {
             .addInterceptor(HttpLoggingInterceptor().apply {
                 level = HttpLoggingInterceptor.Level.BODY
             })
+
             .build()
 
         retrofit = Retrofit.Builder()

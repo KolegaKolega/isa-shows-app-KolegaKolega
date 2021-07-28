@@ -55,9 +55,9 @@ class ShowsViewModel : ViewModel() {
     fun updateImage(id: Int, email: String, imageFile: File){
         val userId = id.toString().toRequestBody("multipart/from-data".toMediaTypeOrNull())
         val userEmail = email.toRequestBody("multipart/from-data".toMediaTypeOrNull())
-        var profilePic : MultipartBody.Part? = null
+        var profilePic: MultipartBody.Part?
         val request = imageFile.asRequestBody("multipart/from-data".toMediaTypeOrNull())
-        profilePic = MultipartBody.Part.createFormData("image_url", imageFile.name, request)
+        profilePic = MultipartBody.Part.createFormData("image", imageFile.name, request)
         ApiModule.retrofit.updateImage(userId, userEmail, profilePic).enqueue(object : Callback<UpdateImageResponse>{
             override fun onResponse(
                 call: Call<UpdateImageResponse>,

@@ -58,26 +58,33 @@ class ShowsFragment : Fragment() {
                     viewModel.updateImage(id,email, it)
                 }
             }
-//            updateUserPhoto()
-//            updateBottomSheetPhoto()
         }
     }
 
-//    private fun updateBottomSheetPhoto() {
-//        Glide.with(this)
-//            .load(getPhotoUri(FileUtil.getImageFile(this.context)))
-//            .diskCacheStrategy(DiskCacheStrategy.NONE)
-//            .skipMemoryCache(true)
-//            .into(bottomSheetBinding.profilePhoto)
-//    }
-//
-//    private fun updateUserPhoto(){
-//        Glide.with(this)
-//            .load(getPhotoUri(FileUtil.getImageFile(this.context)))
-//            .diskCacheStrategy(DiskCacheStrategy.NONE)
-//            .skipMemoryCache(true)
-//            .into(binding.logOutButton)
-//    }
+    private fun updateBottomSheetPhoto() {
+        val prefs = activity?.getPreferences(Context.MODE_PRIVATE)
+        val imageUrl = prefs?.getString(IMAGE, null)
+        if (imageUrl != null) {
+            Glide.with(this)
+                .load(imageUrl)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .skipMemoryCache(true)
+                .into(bottomSheetBinding.profilePhoto)
+        }
+    }
+
+    private fun updateUserPhoto(){
+        val prefs = activity?.getPreferences(Context.MODE_PRIVATE)
+        val imageUrl = prefs?.getString(IMAGE, null)
+        if (imageUrl != null) {
+            Glide.with(this)
+                .load(imageUrl)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .skipMemoryCache(true)
+                .into(binding.logOutButton)
+        }
+
+    }
 
     private fun openCamera() {
 
@@ -110,6 +117,7 @@ class ShowsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = ActivityShowsBinding.inflate(inflater, container, false)
+
         return binding.root
     }
 
@@ -126,26 +134,20 @@ class ShowsFragment : Fragment() {
 
         viewModel.getUserLiveData().observe(viewLifecycleOwner){user ->
             if (user != null) {
-                Glide.with(this)
-                    .load(user.imageUrl)
-                    .diskCacheStrategy(DiskCacheStrategy.NONE)
-                    .skipMemoryCache(true)
-                    .into(binding.logOutButton)
 
-                Glide.with(this)
-                    .load(user.imageUrl)
-                    .diskCacheStrategy(DiskCacheStrategy.NONE)
-                    .skipMemoryCache(true)
-                    .into(bottomSheetBinding.profilePhoto)
+                with(activity?.getPreferences(Context.MODE_PRIVATE)?.edit()){
+                    this?.putString(IMAGE, user.imageUrl)
+                    this?.apply()
+                }
+                updateUserPhoto()
             }else{
                 Toast.makeText(this.context, "Fetching user failed", Toast.LENGTH_SHORT).show()
             }
         }
         viewModel.getShows()
         initButtonForEmptyState()
-        //updateUserPhoto()
+        updateUserPhoto()
         initUserInfo()
-
     }
 
     private fun initUserInfo() {
@@ -156,7 +158,7 @@ class ShowsFragment : Fragment() {
             bottomSheetBinding = DialogUserInfoBinding.inflate(layoutInflater)
             bottomSheetBinding.root.let { it1 -> dialog?.setContentView(it1) }
 
-            //updateBottomSheetPhoto()
+            updateBottomSheetPhoto()
 
             bottomSheetBinding.logOutButton.setOnClickListener {
                 val alertDialog = this.context?.let { it1 -> AlertDialog.Builder(it1) }

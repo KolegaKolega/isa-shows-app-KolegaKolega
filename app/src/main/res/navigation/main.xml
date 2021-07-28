@@ -14,7 +14,7 @@
         <action
             android:id="@+id/action_login_to_shows"
             app:destination="@id/shows"
-            app:popUpTo="@id/login"/>
+            app:popUpTo="@id/shows"/>
 
         <action
             android:id="@+id/action_login_to_register"

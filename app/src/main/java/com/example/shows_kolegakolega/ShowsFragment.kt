@@ -151,7 +151,6 @@ class ShowsFragment : Fragment() {
     }
 
     private fun initUserInfo() {
-
         binding.logOutButton.setOnClickListener {
             val dialog = this.context?.let { BottomSheetDialog(it) }
 
@@ -218,4 +217,3 @@ class ShowsFragment : Fragment() {
 
     }
 }
-

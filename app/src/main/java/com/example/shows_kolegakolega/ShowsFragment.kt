@@ -192,5 +192,3 @@ class ShowsFragment : Fragment() {
 
     }
 }
-
-

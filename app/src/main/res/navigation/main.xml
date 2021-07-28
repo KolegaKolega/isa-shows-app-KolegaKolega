@@ -14,7 +14,8 @@
         <action
             android:id="@+id/action_login_to_shows"
             app:destination="@id/shows"
-            app:popUpTo="@id/login"/>
+            app:popUpTo="@id/login"
+            app:popUpToInclusive="true"/>
     </fragment>
 
     <fragment
@@ -31,7 +32,9 @@
         <action
             android:id="@+id/shows_to_details"
             app:destination="@id/show_details"
-            app:popUpTo="@id/show_details"/>
+            app:popUpTo="@id/show_details">
+
+        </action>
 
 
     </fragment>
@@ -49,9 +52,7 @@
         <action
             android:id="@+id/details_to_shows"
             app:destination="@id/shows"
-            app:popUpTo="@id/shows">
-
-        </action>
+            app:popUpTo="@id/shows"/>
 
     </fragment>
 

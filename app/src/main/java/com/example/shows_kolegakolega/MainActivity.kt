@@ -8,9 +8,13 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.example.shows_kolegakolega.databinding.ActivityMainBinding
 import com.example.shows_kolegakolega.networking.ApiModule
+import com.example.shows_kolegakolega.networking.NetworkChecker
 
 
 class MainActivity : AppCompatActivity() {
+    companion object{
+        private const val CONNECTION = "CONNECTION"
+    }
 
     private lateinit var binding : ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {

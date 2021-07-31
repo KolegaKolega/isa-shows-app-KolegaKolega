@@ -4,13 +4,23 @@ import android.media.Rating
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.shows_kolegakolega.database.ReviewEntity
+import com.example.shows_kolegakolega.database.ShowEntity
+import com.example.shows_kolegakolega.database.ShowsDatabase
 import com.example.shows_kolegakolega.model.*
 import com.example.shows_kolegakolega.networking.ApiModule
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.util.concurrent.Executors
 
-class ShowDetailsViewModel : ViewModel() {
+class ShowDetailsViewModel(
+    private val showsDatabase: ShowsDatabase
+) : ViewModel() {
+
+    companion object{
+        private const val TEMP_ID = "tempId"
+    }
 
     private var id : String = "0"
 
@@ -43,6 +53,15 @@ class ShowDetailsViewModel : ViewModel() {
                 response: Response<ReviewResponse>
             ) {
                 reviewsLiveData.value = response.body()?.reviews
+
+                Executors.newSingleThreadExecutor().execute {
+                    response.body()?.reviews?.let {
+                        showsDatabase.reviewDao().insertAllReviews(it.map {it2->
+                            ReviewEntity(it2.id, it2.comment, it2.rating, it2.showId, it2.user)
+                        })
+                    }
+                }
+
             }
 
             override fun onFailure(call: Call<ReviewResponse>, t: Throwable) {
@@ -68,6 +87,14 @@ class ShowDetailsViewModel : ViewModel() {
         })
     }
 
+    fun getReviewsFromDatabase(): LiveData<List<ReviewEntity>> {
+        return showsDatabase.reviewDao().getAllReviews()
+    }
+
+    fun getShowFromDatabase(showId: String): LiveData<ShowEntity> {
+        return showsDatabase.showDao().getShow(showId)
+    }
+
     fun createReview(rating: Int, comment: String?, showId: Int){
         ApiModule.retrofit.createReview(CreateReviewRequest(rating,comment,showId))
             .enqueue(object : Callback<CreateReviewResponse>{
@@ -83,6 +110,20 @@ class ShowDetailsViewModel : ViewModel() {
                 }
 
             })
+    }
+
+    fun createReviewInDataBase(rating: Int, comment: String?, showId: Int, user: User){
+        Executors.newSingleThreadExecutor().execute {
+            showsDatabase.reviewDao().insertSingleReview(
+                ReviewEntity(TEMP_ID,comment, rating, showId, user)
+            )
+        }
+    }
+
+    fun deleteReviewInDatabase(reviewEntity: ReviewEntity){
+        Executors.newSingleThreadExecutor().execute {
+            showsDatabase.reviewDao().deleteReview(reviewEntity)
+        }
     }
 
 }

@@ -2,13 +2,16 @@ package com.example.shows_kolegakolega
 
 import android.Manifest
 import android.content.Context
-import android.net.Uri
+import android.net.*
+import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.core.content.FileProvider
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -19,11 +22,16 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.shows_kolegakolega.data.FileUtil
 import com.example.shows_kolegakolega.data.preparePrmissionsContract
+import com.example.shows_kolegakolega.database.ShowEntity
 import com.example.shows_kolegakolega.databinding.ActivityShowsBinding
 import com.example.shows_kolegakolega.databinding.DialogUserInfoBinding
 import com.example.shows_kolegakolega.model.Show
+import com.example.shows_kolegakolega.networking.NetworkChecker
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import java.io.File
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
+import kotlin.streams.toList
 import androidx.appcompat.app.AlertDialog as AlertDialog
 
 
@@ -42,7 +50,9 @@ class ShowsFragment : Fragment() {
 
     private lateinit var bottomSheetBinding: DialogUserInfoBinding
 
-    private val viewModel: ShowsViewModel by viewModels()
+    private val viewModel: ShowsViewModel by viewModels{
+        ShowsViewModelFactory((activity?.application as ShowsKolegaKolegaApp).showsDatabase)
+    }
 
     private val permissionForTakePhoto = preparePrmissionsContract(onPermissionsGranted = {
         openCamera()
@@ -121,13 +131,20 @@ class ShowsFragment : Fragment() {
         return binding.root
     }
 
+    @RequiresApi(Build.VERSION_CODES.N)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel.getShowsLiveData().observe(viewLifecycleOwner, {shows ->
             if(!shows.isNullOrEmpty()){
+                binding.showsRecycler.isVisible = true
+                binding.camera.isVisible = false
+                binding.textCamera.isVisible = false
                 initRecyclerView(shows)
             }else{
+                binding.showsRecycler.isVisible = false
+                binding.camera.isVisible = true
+                binding.textCamera.isVisible = true
                 Toast.makeText(this.context, "Fetching tv shows failed", Toast.LENGTH_SHORT).show()
             }
         })
@@ -144,7 +161,31 @@ class ShowsFragment : Fragment() {
                 Toast.makeText(this.context, "Fetching user failed", Toast.LENGTH_SHORT).show()
             }
         }
-        viewModel.getShows()
+
+        val networkChecker = this.context?.let { NetworkChecker(it) }
+        if (networkChecker != null) {
+            if(networkChecker.isOnline()){
+                viewModel.getShows()
+            }else{
+                viewModel.getShowsFromDatabase().observe(viewLifecycleOwner){shows ->
+                    if(shows.isNullOrEmpty()){
+                        binding.showsRecycler.isVisible = false
+                        binding.camera.isVisible = true
+                        binding.textCamera.isVisible = true
+                    }else{
+                        binding.showsRecycler.isVisible = true
+                        binding.camera.isVisible = false
+                        binding.textCamera.isVisible = false
+
+                        var listOfShows = emptyList<Show>()
+                        for(s in shows){
+                            listOfShows = listOfShows + getShowFromShowEntity(s)
+                        }
+                        initRecyclerView(listOfShows)
+                    }
+                }
+            }
+        }
         initButtonForEmptyState()
         updateUserPhoto()
         initUserInfo()
@@ -199,7 +240,7 @@ class ShowsFragment : Fragment() {
     }
 
     private fun initButtonForEmptyState() {
-        binding.showEmpty.setOnClickListener {
+        binding.showEmptyButton.setOnClickListener {
             val recyclerVisibility = binding.showsRecycler.isVisible
             binding.showsRecycler.isVisible = binding.camera.isVisible
             binding.camera.isVisible = recyclerVisibility
@@ -216,4 +257,37 @@ class ShowsFragment : Fragment() {
         }
 
     }
+
+    private fun getShowFromShowEntity(se: ShowEntity): Show{
+        return Show(
+            se.id,
+            se.averageRating,
+            se.description,
+            se.imageUrl,
+            se.noOfReviews,
+            se.title
+        )
+    }
+
+//    fun isOnline(): Boolean {
+//        val connectivityManager =
+//            activity?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+//        if (connectivityManager != null) {
+//            val capabilities =
+//                connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
+//            if (capabilities != null) {
+//                if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
+//                    Log.i("Internet", "NetworkCapabilities.TRANSPORT_CELLULAR")
+//                    return true
+//                } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
+//                    Log.i("Internet", "NetworkCapabilities.TRANSPORT_WIFI")
+//                    return true
+//                } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)) {
+//                    Log.i("Internet", "NetworkCapabilities.TRANSPORT_ETHERNET")
+//                    return true
+//                }
+//            }
+//        }
+//        return false
+//    }
 }

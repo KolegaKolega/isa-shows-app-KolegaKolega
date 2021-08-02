@@ -145,14 +145,18 @@
                 app:layout_constraintBottom_toTopOf="@id/add_reviwe_button"
                 />
 
-            <Button
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/add_reviwe_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:text="Write a reviwe"
                 android:layout_margin="24dp"
+                android:background="@drawable/rounded_reviwe_button"
+                android:textColor="@color/white"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                style="@style/ReviewSubmitLogOutButton"
+                android:textAllCaps="false"
                 />
         </androidx.constraintlayout.widget.ConstraintLayout>
 

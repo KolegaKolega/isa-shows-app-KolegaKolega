@@ -13,5 +13,4 @@
     <string name='settings' formatted='false'>Settings</string>
     <string name="register">Register</string>
     <string name="repeat_password">Repeat password</string>
-    <string name="shows">Shows</string>
 </resources>

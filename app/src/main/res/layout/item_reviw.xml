@@ -1,27 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:clipToPadding="false"
-    android:padding="8dp"
-    tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout"
-    >
+    android:padding="8dp">
 
 
-    <com.google.android.material.imageview.ShapeableImageView
+    <ImageView
         android:id="@+id/placeholder"
-        android:layout_width="52dp"
-        android:layout_height="52dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:src="@drawable/ic_profile_placeholder"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="16dp"
-        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent"
-        />
+        android:layout_marginTop="16dp"/>
 
     <TextView
         android:id="@+id/name"
@@ -88,4 +83,4 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/reviwe_comment"/>
 
-</merge>
+</androidx.constraintlayout.widget.ConstraintLayout>

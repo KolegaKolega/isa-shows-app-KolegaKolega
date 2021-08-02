@@ -15,7 +15,6 @@
         android:layout_marginTop="48dp"
         app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent"
         app:strokeWidth="2dp"
-        android:padding="3dp"
         app:strokeColor="@color/purple_700"/>
 
     <TextView
@@ -42,14 +41,19 @@
         android:layout_marginEnd="24dp"
         />
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/log_out_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:text="@string/logout"
+        android:background="@drawable/rounded_reviwe_button"
+        android:textColor="@color/white"
+        android:textAllCaps="false"
+        android:textSize="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginStart="24dp"
         android:layout_marginEnd="24dp"
         android:layout_marginBottom="24dp"
-        style="@style/ReviewSubmitLogOutButton"
         />
 
 </LinearLayout>

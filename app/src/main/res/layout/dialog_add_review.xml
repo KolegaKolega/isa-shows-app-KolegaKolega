@@ -68,19 +68,15 @@
             />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <androidx.appcompat.widget.AppCompatButton
+    <Button
         android:id="@+id/submit"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:text="Submit"
         android:layout_margin="24dp"
-        android:background="@drawable/rounded_reviwe_button"
-        android:textColor="@color/white"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/comment"
-        android:textAllCaps="false"
+        style="@style/ReviewSubmitLogOutButton"
         />
 
 

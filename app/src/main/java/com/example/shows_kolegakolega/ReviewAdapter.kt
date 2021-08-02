@@ -1,10 +1,8 @@
 package com.example.shows_kolegakolega
 
-import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
-import com.example.shows_kolegakolega.databinding.ItemReviwBinding
+import com.example.shows_kolegakolega.custom_view.ItemReviewView
 import com.example.shows_kolegakolega.model.Review
 
 class ReviewAdapter(
@@ -12,8 +10,8 @@ class ReviewAdapter(
 ) : RecyclerView.Adapter<ReviewAdapter.ReviewViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ReviewViewHolder {
-        val binding = ItemReviwBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ReviewViewHolder(binding)
+        val itemReview = ItemReviewView(parent.context)
+        return ReviewViewHolder(itemReview)
     }
 
     override fun onBindViewHolder(holder: ReviewViewHolder, position: Int) {
@@ -30,16 +28,17 @@ class ReviewAdapter(
         notifyItemInserted(items.lastIndex)
     }
 
-    inner class ReviewViewHolder(private val binding : ItemReviwBinding) : RecyclerView.ViewHolder(binding.root){
+    inner class ReviewViewHolder(private val itemReview: ItemReviewView) : RecyclerView.ViewHolder(itemReview.rootView){
 
         fun bind(item : Review){
-            binding.name.text = item.user.email
-            binding.rating.text = item.rating.toString()
+            itemReview.setEmail(item.user.email)
+            itemReview.setRating(item.rating)
+            item.user.imageUrl?.let { itemReview.setProfilePicture(it) }
 
             if(!item.comment.isNullOrEmpty()){
-                binding.reviweComment.text = item.comment
+                itemReview.setComment(item.comment)
             }else{
-                binding.reviweComment.isVisible = false
+                itemReview.setCommentVisible(false)
             }
 
         }

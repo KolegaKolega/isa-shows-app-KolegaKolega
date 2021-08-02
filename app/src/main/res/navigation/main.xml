@@ -4,7 +4,24 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
-    app:startDestination="@id/login">
+    app:startDestination="@id/splash">
+
+    <fragment
+        android:id="@+id/splash"
+        android:name="com.example.shows_kolegakolega.SplashFragment"
+        tools:layout="@layout/fragment_splash">
+
+        <action
+            android:id="@+id/splash_to_login"
+            app:destination="@id/login"
+            app:popUpTo="@id/login"/>
+
+        <action
+            android:id="@+id/splash_to_shows"
+            app:destination="@id/shows"
+            app:popUpTo="@id/splash"/>
+
+    </fragment>
 
     <fragment
         android:id="@+id/login"

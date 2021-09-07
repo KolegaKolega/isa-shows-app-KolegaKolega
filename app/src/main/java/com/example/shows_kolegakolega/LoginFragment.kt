@@ -9,7 +9,10 @@ import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.shows_kolegakolega.databinding.ActivityLoginBinding
 
@@ -19,6 +22,7 @@ class LoginFragment : Fragment() {
         private const val PASSWORD_MIN_LENGTH = 5
         private const val EMAIL = "EMAIL"
         private const val REMEMBER_ME = "Remember_me"
+        private const val SUCCESFUL_REGISTRATION = "succ_reg"
     }
 
     private var _binding: ActivityLoginBinding? = null
@@ -26,6 +30,7 @@ class LoginFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
 
+    private val viewModel: SignInViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -33,15 +38,41 @@ class LoginFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = ActivityLoginBinding.inflate(inflater, container, false)
+        checkIfSuccesfulRegistartion()
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel.getSignInResultLiveData().observe(viewLifecycleOwner){ succes ->
+            if(succes){
+                findNavController().navigate(R.id.action_login_to_shows)
+            }else{
+                Toast.makeText(this.context, "Prijava nije uspjela", Toast.LENGTH_SHORT).show()
+            }
+
+        }
+        checkIfSuccesfulRegistartion()
         initAutoLogin()
         initCheckEmailPassword()
         initLoginButton()
+        initRegisterButton()
 
+    }
+
+    private fun checkIfSuccesfulRegistartion() {
+        val prefs = activity?.getPreferences(Context.MODE_PRIVATE)
+        val succRegistration = prefs?.getBoolean(SUCCESFUL_REGISTRATION, false)
+        if(succRegistration == true){
+            binding.login.text = "Registration successful!"
+            binding.registration.isVisible = false
+        }
+    }
+
+    private fun initRegisterButton() {
+        binding.registration.setOnClickListener {
+            findNavController().navigate(R.id.action_login_to_register)
+        }
     }
 
     private fun initAutoLogin() {
@@ -64,10 +95,15 @@ class LoginFragment : Fragment() {
             binding.email.error = null
 
             val email = binding.email.editText?.text.toString()
-            Log.println(Log.DEBUG,"", email)
+
             if(validateEmail(email)) {
                 isRememberMeChecked()
-                findNavController().navigate(R.id.action_login_to_shows)
+                activity?.getPreferences(Context.MODE_PRIVATE)?.let { it1 ->
+                    viewModel.signIn(binding.email.editText?.text.toString(),
+                        binding.password.editText?.text.toString(),
+                        it1
+                    )
+                }
             }else {
                 binding.email.error = "Invalid email!"
             }
@@ -79,7 +115,6 @@ class LoginFragment : Fragment() {
             if(binding.chechboxRememberMe.isChecked){
                 this?.putBoolean(REMEMBER_ME, true)
             }
-            this?.putString(EMAIL, binding.email.editText?.text.toString())
             this?.apply()
         }
 

@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.FileProvider
 import androidx.core.view.isVisible
@@ -29,7 +30,9 @@ import androidx.appcompat.app.AlertDialog as AlertDialog
 class ShowsFragment : Fragment() {
 
     companion object {
-        private const val EMAIL = "EMAIL"
+        private const val EMAIL = "email"
+        private const val ID = "id"
+        private const val IMAGE = "image"
     }
 
     private var _binding: ActivityShowsBinding? = null
@@ -47,36 +50,40 @@ class ShowsFragment : Fragment() {
 
     private val getCameraImage = registerForActivityResult(ActivityResultContracts.TakePicture()){ succes ->
         if(succes){
-            updateUserPhoto()
-            updateBotomSheetPhoto()
+            val prefs = activity?.getPreferences(Context.MODE_PRIVATE)
+            val email = prefs?.getString(EMAIL, "No name")
+            val id = prefs?.getInt(ID, 0)
+            FileUtil.getImageFile(this.context)?.let {
+                if (id != null && email != null) {
+                    viewModel.updateImage(id,email, it)
+                }
+            }
         }
     }
 
-    private fun updateBotomSheetPhoto() {
-        if(FileUtil.getImageFile(this.context) != null){
+    private fun updateBottomSheetPhoto() {
+        val prefs = activity?.getPreferences(Context.MODE_PRIVATE)
+        val imageUrl = prefs?.getString(IMAGE, null)
+        if (imageUrl != null) {
             Glide.with(this)
-                .load(getPhotoUri(FileUtil.getImageFile(this.context)))
+                .load(imageUrl)
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .skipMemoryCache(true)
                 .into(bottomSheetBinding.profilePhoto)
-
-        }else{
-            bottomSheetBinding.profilePhoto.setImageResource(R.drawable.ic_profile_placeholder)
         }
-
     }
 
     private fun updateUserPhoto(){
-        if(FileUtil.getImageFile(this.context) != null){
+        val prefs = activity?.getPreferences(Context.MODE_PRIVATE)
+        val imageUrl = prefs?.getString(IMAGE, null)
+        if (imageUrl != null) {
             Glide.with(this)
-                .load(getPhotoUri(FileUtil.getImageFile(this.context)))
+                .load(imageUrl)
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .skipMemoryCache(true)
                 .into(binding.logOutButton)
-
-        }else{
-            binding.logOutButton.setImageResource(R.drawable.ic_profile_placeholder)
         }
+
     }
 
     private fun openCamera() {
@@ -110,19 +117,37 @@ class ShowsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = ActivityShowsBinding.inflate(inflater, container, false)
+
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.initShows()
+
         viewModel.getShowsLiveData().observe(viewLifecycleOwner, {shows ->
-            initRecyclerView(shows)
+            if(!shows.isNullOrEmpty()){
+                initRecyclerView(shows)
+            }else{
+                Toast.makeText(this.context, "Fetching tv shows failed", Toast.LENGTH_SHORT).show()
+            }
         })
+
+        viewModel.getUserLiveData().observe(viewLifecycleOwner){user ->
+            if (user != null) {
+
+                with(activity?.getPreferences(Context.MODE_PRIVATE)?.edit()){
+                    this?.putString(IMAGE, user.imageUrl)
+                    this?.apply()
+                }
+                updateUserPhoto()
+            }else{
+                Toast.makeText(this.context, "Fetching user failed", Toast.LENGTH_SHORT).show()
+            }
+        }
+        viewModel.getShows()
         initButtonForEmptyState()
         updateUserPhoto()
         initUserInfo()
-
     }
 
     private fun initUserInfo() {
@@ -132,7 +157,7 @@ class ShowsFragment : Fragment() {
             bottomSheetBinding = DialogUserInfoBinding.inflate(layoutInflater)
             bottomSheetBinding.root.let { it1 -> dialog?.setContentView(it1) }
 
-            updateBotomSheetPhoto()
+            updateBottomSheetPhoto()
 
             bottomSheetBinding.logOutButton.setOnClickListener {
                 val alertDialog = this.context?.let { it1 -> AlertDialog.Builder(it1) }

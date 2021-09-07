@@ -5,23 +5,22 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.shows_kolegakolega.data.DemoData
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.shows_kolegakolega.databinding.ActivityShowDetailsBinding
 import com.example.shows_kolegakolega.databinding.DialogAddReviewBinding
 import com.example.shows_kolegakolega.model.Review
+import com.example.shows_kolegakolega.model.Show
 import com.google.android.material.bottomsheet.BottomSheetDialog
 
 class ShowDetailsFragment : Fragment() {
-
-    companion object {
-        private const val EMAIL = "EMAIL"
-    }
 
     private var reviewAdapter: ReviewAdapter? = null
 
@@ -45,32 +44,51 @@ class ShowDetailsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initLayout(args.showId)
+        viewModel.getSingleShowLiveData().observe(viewLifecycleOwner){ show ->
+            if (show != null) {
+                initLayout(show)
+                binding.average.text = "${show.noOfReviews.toString()} Reviews, " +
+                        "${show.averageRating.toString()} Average"
+                if(show.averageRating != null)
+                    binding.ratingBar.rating = show.averageRating
+            }else{
+                Toast.makeText(this.context, "Fetching tv show failed", Toast.LENGTH_SHORT).show()
+            }
+        }
+        viewModel.getReviewsLiveData().observe(viewLifecycleOwner){ reviews ->
+            if(!reviews.isNullOrEmpty()){
+                initRecyclerView(reviews)
+                binding.noReviweYet.isVisible = false
+                binding.reviewRecyclerView.isVisible = true
+                binding.average.isVisible = true
+                binding.ratingBar.isVisible = true
+            }else{
+                Toast.makeText(this.context, "Fetching reviews failed", Toast.LENGTH_SHORT).show()
+            }
+
+        }
+        viewModel.getCreateReviewResultLiveData().observe(viewLifecycleOwner){succes ->
+            if(succes){
+                viewModel.getShow(args.showId)
+                viewModel.getReviews(args.showId.toInt())
+            }else{
+                Toast.makeText(this.context, "Creating review failed", Toast.LENGTH_SHORT).show()
+            }
+        }
+        viewModel.getShow(args.showId)
+        viewModel.getReviews(args.showId.toInt())
         intBackButton()
         initAddReviewButton()
-        viewModel.initReviews(args.showId)
-        checkReviews()
-        viewModel.getReviewsLiveData().observe(viewLifecycleOwner, { reviews ->
-            initRecyclerView(reviews)
-        })
-
     }
 
-    private fun checkReviews() {
-        if(viewModel.countReviews() > 0){
-            binding.noReviweYet.isVisible = false
-            binding.reviewRecyclerView.isVisible = true
-            binding.average.isVisible = true
-            binding.ratingBar.isVisible = true
-            binding.average.text = "${viewModel.countReviews()} Reviews, ${viewModel.getAverage()} Average"
-            binding.ratingBar.rating = viewModel.getAverage()
-        }
-    }
-
-    private fun initLayout(showId: String) {
-        binding.showTitle.text = DemoData.getShowById(showId).name
-        binding.showDescription.text = DemoData.getShowById(showId).description
-        binding.showImage.setImageResource(DemoData.getShowById(showId).image)
+    private fun initLayout(show: Show) {
+        binding.showTitle.text = show.title
+        binding.showDescription.text = show.description
+        Glide.with(this)
+            .load(show.imageUrl)
+            .diskCacheStrategy(DiskCacheStrategy.NONE)
+            .skipMemoryCache(true)
+            .into(binding.showImage)
     }
 
     override fun onDestroyView() {
@@ -78,13 +96,11 @@ class ShowDetailsFragment : Fragment() {
         _binding = null
     }
 
-
     private fun initRecyclerView(reviews: List<Review>) {
         binding.reviewRecyclerView.layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
 
         reviewAdapter = ReviewAdapter(reviews)
         binding.reviewRecyclerView.adapter = reviewAdapter
-
     }
 
     private fun initAddReviewButton() {
@@ -100,17 +116,11 @@ class ShowDetailsFragment : Fragment() {
         dialog?.setContentView(bottomSheetBinding.root)
 
         bottomSheetBinding.submit.setOnClickListener {
-            val username = getUserName()
-            val review = username?.let { it1 ->
-                Review(
-                    it1, bottomSheetBinding.comment.editText?.text.toString(),
-                    bottomSheetBinding.ratingBar.rating.toInt())
-            }
-            if (review != null) {
-                viewModel.addReview(review)
-            }
+            viewModel.createReview(bottomSheetBinding.ratingBar.rating.toInt(),
+                bottomSheetBinding.comment.editText?.text.toString(),
+                args.showId.toInt()
+            )
 
-            checkReviews()
             dialog?.dismiss()
         }
 
@@ -119,12 +129,6 @@ class ShowDetailsFragment : Fragment() {
         }
 
         dialog?.show()
-    }
-
-    private fun getUserName(): String? {
-        val prefs = activity?.getPreferences(Context.MODE_PRIVATE)
-        val userName = prefs?.getString(EMAIL, "No name")
-        return userName?.let { userName.substring(0, it.indexOf("@")) }
     }
 
     private fun intBackButton() {

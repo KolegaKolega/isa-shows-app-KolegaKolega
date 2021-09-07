@@ -1,27 +1,28 @@
 package com.example.shows_kolegakolega
 
-import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.shows_kolegakolega.data.FileUtil
+import com.example.shows_kolegakolega.database.ShowEntity
+import com.example.shows_kolegakolega.database.ShowsDatabase
 import com.example.shows_kolegakolega.model.Show
 import com.example.shows_kolegakolega.model.ShowsResponse
 import com.example.shows_kolegakolega.model.UpdateImageResponse
 import com.example.shows_kolegakolega.model.User
 import com.example.shows_kolegakolega.networking.ApiModule
-import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
-import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.io.File
+import java.util.concurrent.Executors
 
-class ShowsViewModel : ViewModel() {
+class ShowsViewModel(
+    val showsDatabase: ShowsDatabase
+) : ViewModel() {
 
     private val showsLiveData : MutableLiveData<List<Show>> by lazy {
         MutableLiveData<List<Show>>()
@@ -43,6 +44,14 @@ class ShowsViewModel : ViewModel() {
         ApiModule.retrofit.getShows().enqueue(object : Callback<ShowsResponse>{
             override fun onResponse(call: Call<ShowsResponse>, response: Response<ShowsResponse>) {
                 showsLiveData.value = response.body()?.shows
+                var listOfEntities = emptyList<ShowEntity>()
+                for(s in response.body()?.shows!!){
+                    listOfEntities = listOfEntities + getShowEntityFromShow(s)
+                }
+                Executors.newSingleThreadExecutor().execute {
+                    showsDatabase.showDao().insertAllShows(listOfEntities)
+                }
+
             }
 
             override fun onFailure(call: Call<ShowsResponse>, t: Throwable) {
@@ -50,6 +59,10 @@ class ShowsViewModel : ViewModel() {
             }
 
         })
+    }
+
+    fun getShowsFromDatabase() : LiveData<List<ShowEntity>>{
+        return showsDatabase.showDao().getAllShows()
     }
 
     fun updateImage(id: Int, email: String, imageFile: File){
@@ -72,5 +85,18 @@ class ShowsViewModel : ViewModel() {
 
         })
     }
+
+    private fun getShowEntityFromShow(se: Show): ShowEntity{
+        return ShowEntity(
+            se.id,
+            se.averageRating,
+            se.description,
+            se.imageUrl,
+            se.noOfReviews,
+            se.title
+        )
+    }
+
+
 }
 

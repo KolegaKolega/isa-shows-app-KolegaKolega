@@ -1,5 +1,6 @@
 package com.example.shows_kolegakolega
 
+import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -8,20 +9,16 @@ import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.Window
-import android.widget.Button
-import android.widget.EditText
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import com.example.shows_kolegakolega.databinding.ActivityLoginBinding
 
 class LoginFragment : Fragment() {
 
     companion object {
         private const val PASSWORD_MIN_LENGTH = 5
+        private const val EMAIL = "EMAIL"
+        private const val REMEMBER_ME = "Remember_me"
     }
 
     private var _binding: ActivityLoginBinding? = null
@@ -41,8 +38,19 @@ class LoginFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initAutoLogin()
         initCheckEmailPassword()
         initLoginButton()
+
+    }
+
+    private fun initAutoLogin() {
+        val prefs = activity?.getPreferences(Context.MODE_PRIVATE)
+        val alreadyLogedIn = prefs?.getBoolean(REMEMBER_ME, false)
+        if(alreadyLogedIn == true){
+            findNavController().navigate(R.id.action_login_to_shows)
+        }
+
     }
 
     override fun onDestroyView() {
@@ -58,11 +66,23 @@ class LoginFragment : Fragment() {
             val email = binding.email.editText?.text.toString()
             Log.println(Log.DEBUG,"", email)
             if(validateEmail(email)) {
+                isRememberMeChecked()
                 findNavController().navigate(R.id.action_login_to_shows)
             }else {
                 binding.email.error = "Invalid email!"
             }
         }
+    }
+
+    private fun isRememberMeChecked() {
+        with(activity?.getPreferences(Context.MODE_PRIVATE)?.edit()){
+            if(binding.chechboxRememberMe.isChecked){
+                this?.putBoolean(REMEMBER_ME, true)
+            }
+            this?.putString(EMAIL, binding.email.editText?.text.toString())
+            this?.apply()
+        }
+
     }
 
     private fun validateEmail(email: String): Boolean {

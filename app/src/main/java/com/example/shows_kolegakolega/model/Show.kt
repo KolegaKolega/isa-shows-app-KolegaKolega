@@ -6,6 +6,11 @@ data class Show(
     val id : String,
     val name : String,
     val description : String,
-    @DrawableRes val image : Int
-)
+    @DrawableRes val image : Int,
+    val reviews: MutableList<Review>
+){
+    fun addReview(review: Review){
+        reviews.add(review)
+    }
+}
 

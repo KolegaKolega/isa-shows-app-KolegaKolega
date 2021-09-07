@@ -2,13 +2,14 @@ package com.example.shows_kolegakolega
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.RecyclerView
 import com.example.shows_kolegakolega.databinding.ViweShowItemBinding
 import com.example.shows_kolegakolega.model.Show
 
 class ShowsAdapter(
-    private var items : List<Show>,
-    private val onClickCallback : (Show) -> Unit
+    private var items: List<Show>,
+    private val onClickCallback: (Show) -> Unit
 ) : RecyclerView.Adapter<ShowsAdapter.ShowsViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShowsViewHolder {
@@ -40,3 +41,4 @@ class ShowsAdapter(
 
     }
 }
+

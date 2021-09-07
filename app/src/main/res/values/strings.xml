@@ -1,4 +1,14 @@
 <resources>
     <string name="app_name">Shows-kolegakolega</string>
+    <string name="login">Login</string>
+    <string name="in_order_to_continue_please_log_in">In order to continue please log in.</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="show_hide_empty_state">Show/hide empty state</string>
+    <string name="your_shows_are_not_showing_get_it">Your shows are not showing. Get it?</string>
     <string name="no_reviews_yet">No reviews yet</string>
+    <string name="logout">Logout</string>
+    <string name="change_profile_photo">Change profile photo</string>
+    <string name='no_permission' formatted='false'>Please check your permissions in Settings.</string>
+    <string name='settings' formatted='false'>Settings</string>
 </resources>

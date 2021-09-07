@@ -8,16 +8,16 @@
 
     <ImageView
         android:id="@+id/top_left"
-        android:layout_width="136dp"
-        android:layout_height="96dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:src="@drawable/top_left_illustration"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/top_right"
-        android:layout_width="200dp"
-        android:layout_height="264dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginEnd="0dp"
         android:src="@drawable/top_right_illustration"
         app:layout_constraintEnd_toEndOf="parent"
@@ -25,8 +25,8 @@
 
     <ImageView
         android:id="@+id/logo"
-        android:layout_width="162dp"
-        android:layout_height="38dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginTop="80dp"
         android:layout_marginStart="56dp"
         android:src="@drawable/logo_horizontal_white"
@@ -38,7 +38,7 @@
         android:id="@+id/login"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Login"
+        android:text="@string/login"
         android:textColor="@color/white"
         android:textSize="30sp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -54,7 +54,7 @@
         android:id="@+id/order"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="In order to continue please log in."
+        android:text="@string/in_order_to_continue_please_log_in"
         android:textColor="@color/white"
         android:textSize="20sp"
         app:layout_constraintTop_toBottomOf="@id/login"
@@ -79,7 +79,7 @@
         app:boxStrokeWidth="2dp"
         android:textColor="@color/white"
         android:textColorHint="@color/white"
-        android:hint="Email"
+        android:hint="@string/email"
         app:hintTextColor="@color/white"
         >
 
@@ -111,7 +111,7 @@
         android:textColorHint="@color/white"
         app:hintTextColor="@color/white"
         app:endIconMode="password_toggle"
-        android:hint="Password"
+        android:hint="@string/password"
         >
 
     <com.google.android.material.textfield.TextInputEditText
@@ -122,6 +122,30 @@
         android:inputType="textPassword"
         />
 </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.checkbox.MaterialCheckBox
+        android:id="@+id/chechbox_remember_me"
+        android:layout_width="32dp"
+        android:layout_height="34dp"
+        android:layout_marginStart="22dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/password"
+        android:buttonTint="@color/white" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Remember me"
+        android:textColor="@color/white"
+        android:textSize="19sp"
+        app:layout_constraintStart_toEndOf="@id/chechbox_remember_me"
+        app:layout_constraintTop_toBottomOf="@id/password"
+        android:layout_marginTop="12dp"/>
+
+
+
+
 
 
     <androidx.appcompat.widget.AppCompatButton
@@ -135,7 +159,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:textColor="@color/selector_button_text"
-        android:text="Login"
+        android:text="@string/login"
         android:background="@drawable/rounded"
         android:enabled="false"
         android:textAllCaps="false"

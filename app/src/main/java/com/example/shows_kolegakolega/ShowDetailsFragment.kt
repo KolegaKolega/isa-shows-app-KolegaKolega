@@ -1,25 +1,27 @@
 package com.example.shows_kolegakolega
 
-import android.app.Activity
-import android.content.Intent
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.shows_kolegakolega.data.DemoData
 import com.example.shows_kolegakolega.databinding.ActivityShowDetailsBinding
 import com.example.shows_kolegakolega.databinding.DialogAddReviewBinding
 import com.example.shows_kolegakolega.model.Review
-import com.example.shows_kolegakolega.model.Show
 import com.google.android.material.bottomsheet.BottomSheetDialog
 
 class ShowDetailsFragment : Fragment() {
 
-    private var reviews = emptyList<Review>()
+    companion object {
+        private const val EMAIL = "EMAIL"
+    }
 
     private var reviewAdapter: ReviewAdapter? = null
 
@@ -28,7 +30,9 @@ class ShowDetailsFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
 
-    val args: ShowDetailsFragmentArgs by navArgs()
+    private val args: ShowDetailsFragmentArgs by navArgs()
+
+    private val viewModel: ShowDetailsViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -41,16 +45,32 @@ class ShowDetailsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initLayout(args.showName, args.showDescription, args.showImage)
+        initLayout(args.showId)
         intBackButton()
         initAddReviewButton()
-        initRecyclerView()
+        viewModel.initReviews(args.showId)
+        checkReviews()
+        viewModel.getReviewsLiveData().observe(viewLifecycleOwner, { reviews ->
+            initRecyclerView(reviews)
+        })
+
     }
 
-    private fun initLayout(showName: String, showDescription: String, showImage: Int) {
-        binding.showTitle.text = showName
-        binding.showDescription.text = showDescription
-        binding.showImage.setImageResource(showImage)
+    private fun checkReviews() {
+        if(viewModel.countReviews() > 0){
+            binding.noReviweYet.isVisible = false
+            binding.reviewRecyclerView.isVisible = true
+            binding.average.isVisible = true
+            binding.ratingBar.isVisible = true
+            binding.average.text = "${viewModel.countReviews()} Reviews, ${viewModel.getAverage()} Average"
+            binding.ratingBar.rating = viewModel.getAverage()
+        }
+    }
+
+    private fun initLayout(showId: String) {
+        binding.showTitle.text = DemoData.getShowById(showId).name
+        binding.showDescription.text = DemoData.getShowById(showId).description
+        binding.showImage.setImageResource(DemoData.getShowById(showId).image)
     }
 
     override fun onDestroyView() {
@@ -59,7 +79,7 @@ class ShowDetailsFragment : Fragment() {
     }
 
 
-    private fun initRecyclerView() {
+    private fun initRecyclerView(reviews: List<Review>) {
         binding.reviewRecyclerView.layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
 
         reviewAdapter = ReviewAdapter(reviews)
@@ -80,20 +100,17 @@ class ShowDetailsFragment : Fragment() {
         dialog?.setContentView(bottomSheetBinding.root)
 
         bottomSheetBinding.submit.setOnClickListener {
-            val review = Review("imenko.prezimenkovic", bottomSheetBinding.comment.editText?.text.toString(),
-                bottomSheetBinding.ratingBar.rating.toInt())
-            reviewAdapter?.addItem(review)
-
-            binding.average.isVisible = true
-            binding.ratingBar.isVisible = true
-
-            binding.average.text = "${reviewAdapter?.itemCount} Reviews, ${reviewAdapter?.getAverage()} Average"
-            if (reviewAdapter != null) {
-                binding.ratingBar.rating = reviewAdapter!!.getAverage()
+            val username = getUserName()
+            val review = username?.let { it1 ->
+                Review(
+                    it1, bottomSheetBinding.comment.editText?.text.toString(),
+                    bottomSheetBinding.ratingBar.rating.toInt())
+            }
+            if (review != null) {
+                viewModel.addReview(review)
             }
 
-            binding.noReviweYet.isVisible = false
-            binding.reviewRecyclerView.isVisible = true
+            checkReviews()
             dialog?.dismiss()
         }
 
@@ -102,6 +119,12 @@ class ShowDetailsFragment : Fragment() {
         }
 
         dialog?.show()
+    }
+
+    private fun getUserName(): String? {
+        val prefs = activity?.getPreferences(Context.MODE_PRIVATE)
+        val userName = prefs?.getString(EMAIL, "No name")
+        return userName?.let { userName.substring(0, it.indexOf("@")) }
     }
 
     private fun intBackButton() {
